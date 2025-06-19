@@ -1,2 +1,2 @@
 # get-Laws
-get low from the website
+get law from the website
