@@ -19,6 +19,7 @@ class CacheManager(object):
         self.base_path = Path("./__cache__")
 
     def path(self, key: str, type: CacheType, filetype=None) -> Path:
+        # 缓存文件路径
         if filetype:
             key = f"{key}.{filetype}"
         p: Path = self.base_path / type.value
@@ -31,6 +32,7 @@ class CacheManager(object):
         return full_path.exists(), full_path
 
     def get(self, key: str, type: CacheType, filetype=None):
+        # 缓存中读取内容
         full_path = self.path(key, type, filetype)
         if not full_path.exists():
             return None

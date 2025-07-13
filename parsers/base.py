@@ -3,6 +3,7 @@ from typing import List, Tuple
 from manager.request import RequestManager
 
 
+# 抽象类 统一接口 子类 HTMLParser/wordparser 都实现parse()方法
 class Parser(ABC):
     def __init__(self, parse_type) -> None:
         super().__init__()

@@ -4,6 +4,8 @@ from pathlib import Path
 from database import get_laws, law_db
 import jieba.analyse
 
+# 只处理案例文件
+
 BASE_PATH = Path("../")
 
 def main():

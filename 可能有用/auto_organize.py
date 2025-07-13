@@ -2,9 +2,10 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
+# 寻找目录以及要存放的md
 input_folder = Path("./__cache__/out/法律")
 LOOKUP_FOLDER = Path("../")
-
+# 抓取标题
 name_regxp = re.compile(r"(.*)\((\d{4}-\d{2}-\d{2})\).md")
 def find_all():
     # find all md files in LOOKUP_FOLDER,
@@ -25,6 +26,7 @@ def find_all():
     return result
 
 def main():
+    # 文件映射 找到对应的目标文件夹 并转移文件
     laws_map = find_all()
     for file_path in input_folder.glob("*.md"):
         m = name_regxp.search(file_path.name)

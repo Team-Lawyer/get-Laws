@@ -29,6 +29,7 @@ zh_nums = "[一二三四五六七八九十零百千万1234567890]+"
 title_matcher = f"((?:^{zh_nums}、)|(?:^案例{zh_nums}))"
 
 
+# 判断小结标题 开头+ 小节+可选的
 def isSection(line) -> bool:
     line = line.strip()
     for pattern in section:
@@ -81,6 +82,7 @@ class CasesParser(object):
 
         return ret
 
+# 读取TXT文件
     def parse(self) -> List[Case]:
         with open(self.filename, "r") as f:
             data = filter(
@@ -112,6 +114,7 @@ class CasesParser(object):
                 case.content += self.__slice_content(line)
         return cases
 
+# 保存为json对象
     def write(self, cases: List[Case]):
         ret_json = []
         for case in cases:

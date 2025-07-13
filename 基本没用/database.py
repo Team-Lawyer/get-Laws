@@ -17,6 +17,7 @@ class BaseModel(peewee.Model):
         database = database  # This model uses the "people.db" database.
 
 
+#
 class Category(BaseModel):
     id = peewee.UUIDField(primary_key=True, default=uuid4)
     name = peewee.TextField()
@@ -25,6 +26,7 @@ class Category(BaseModel):
     group = peewee.TextField(null=True)
     order = peewee.IntegerField(null=True)
 
+    # 根据文件夹路径查找已有的分类，没有就创建一个新的分类
     @staticmethod
     def get_or_create_category(folder: Path) -> "Category":
         try:
@@ -34,6 +36,7 @@ class Category(BaseModel):
         return Category.create(**{"name": folder.parts[-1], "folder": folder})
 
 
+# db sql的字段主键
 class Law(BaseModel):
     id = peewee.UUIDField(primary_key=True, default=uuid4)
     level = peewee.TextField()
@@ -73,7 +76,7 @@ class Law(BaseModel):
             return Law.select().where(expr)
         return []
 
-
+# 去找匹配的文件夹名判断级别
 def get_law_level_by_folder(folder: Path) -> str:
     root_folder = folder.parts[0]
     r = re.match("^((司法解释)|(地方性法规)|(宪法)|(案例)|(行政法规)|(部门规章))$", root_folder)

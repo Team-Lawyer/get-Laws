@@ -32,10 +32,10 @@ REQUEST_HEADER = {
 
 class RequestManager(object):
     def __init__(self) -> None:
-        self.cache = CacheManager()
+        self.cache = CacheManager()  # 加载缓存如果有了就不下来了，避免重复
         self.params = []
         self.req_time = 1647659481879
-        self.searchType = "1,9"
+        self.searchType = "1,9"  # 法规 + 司法解释
 
     def getLawList(self, page=1):
         params = self.params + [
@@ -51,22 +51,23 @@ class RequestManager(object):
             ("_", self.req_time),
         ]
 
-        cache_key = sha1(json.dumps(params).encode()).hexdigest()
-
+        cache_key = sha1(json.dumps(params).encode()).hexdigest()  # 请求参数序列化哈希
+        # 检查是否存在本地 已存跳过
         if cache := self.cache.get(cache_key, CacheType.WebPage, "json"):
             return cache
 
         response = requests.get(
             "https://flk.npc.gov.cn/api/", headers=REQUEST_HEADER, params=params
         )
-        sleep(1)
-        logger.debug(f"requesting [{response.status_code}] {self.params} page={page} ")
+        sleep(1)  #设置延迟 避免被识别为攻击
+        logger.debug(f"requesting [{response.status_code}] {self.params} page={page} ")  # 返回结果要看具体日志
 
         ret = response.json()
         self.cache.set(cache_key, CacheType.WebPage, ret, "json")
         return ret
 
     def get_law_detail(self, law_id: str):
+        # 文件名之后内部文件名 是否存在
         if cache := self.cache.get(law_id, CacheType.WebPage, "json"):
             return cache
         logger.debug(f"getting law detail {law_id}")
@@ -81,6 +82,7 @@ class RequestManager(object):
         return ret
 
     def get_html(self, url) -> str:
+        # 拼接html内容文件
         cache_key = os.path.basename(url)
         if cache := self.cache.get(cache_key, CacheType.HTMLDocument, "html"):
             return cache
@@ -95,6 +97,7 @@ class RequestManager(object):
         return ret
 
     def get_word(self, url: str, title_or_output_path: Path) -> Document:
+        # 还是下载了word进缓存文件夹
         filename = os.path.basename(url)
         _, file_extension = os.path.splitext(filename)
 
